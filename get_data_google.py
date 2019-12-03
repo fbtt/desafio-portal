@@ -2,8 +2,8 @@
 # -*- coding: utf-8 -*-
 
 """
-Created by Fernando Battisti
-ferbattisti.eng@gmail.com
+@author: Fernando Battisti 
+<ferbattisti.eng@gmail.com>
 """
 
 # libraries importing
@@ -12,18 +12,50 @@ import requests
 from bs4 import BeautifulSoup
 
 # constants
-
-NUMBER_OF_LINKS = 20
+NUMBER_OF_LINKS = 100
 LIST_TAGS = ['title', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'p', 'ul', 'li', 'table']
 
 # functions
-def make_soup(url):
-    '''
-        recebe a url e retorna um objeto BeatifulSoup
-    '''
+def get_request_html_status(url: str):
+    """ This funtion returns the html and the status_code of a requested url
+    
+    Parameters:
+            url (str): The url you want to request
+    Returns:
+            dict(str, int): Returns a dict containing a str with the html and a int with the status_code
+    """
 
-    html = requests.get(url).text
-    return BeautifulSoup(html)
+    try:
+        r = requests.get(url)
+    except requests.exceptions.SSLError:
+        r = requests.get(url, verify=False)
+        print('Ocorreu um SSLError. Abrindo a url com requests.get(url, verify=False)')
+    except Exception as error:
+        print('Erro:', error)
+        return None
+    
+    html = r.text
+    status_code = r.status_code
+        
+    return {'html': html, 'status_code': status_code}
+
+def get_text_from_soup(soup: BeautifulSoup, list_tags: list):
+    """This function extract the text of a BeatifulSoap object based in the list_tags
+
+    Parameters:
+        soup (BeautifulSoup): A BeautifulSoup object that you want to get the text without the HTML tags
+        list_tags (list): List of strings. The strings need to be the tags you want to use to extract the text
+
+    Returns:
+        str: Return a string containing the text of a BeautifulSoup
+
+   """
+
+    tags = soup.find_all(list_tags)
+    list_of_strings = [tag.get_text(separator=' ') for tag in tags]
+    conteudo_textual = ' '.join(list_of_strings)
+
+    return conteudo_textual
 
 # list of dict to save the responses
 list_dict_responses = []
@@ -33,27 +65,24 @@ count = 1
 for endereco_completo in search(query="telemedicina", tld="co.in", num=10, start=0, stop=NUMBER_OF_LINKS, pause=2): 
     list_dict_responses.append(
             {'posicao': count,
-             'endereco_completo': endereco_completo}
+             'status_code': None,
+             'endereco_completo': endereco_completo,
+             'conteudo_completo': ""}
     )
-
-#    print("count = %d | endereco: %s" % (count, endereco_completo))
     count = count + 1
 
-#%% esse bloco de teste pega o conteudo das paginas e salva em arquivos .txt
-    
-# percorre todos os links
+# armazenar conteudo completo e status_code nos elementos da lista list_dict_responses[]
 for item in list_dict_responses:
-    posicao = item['posicao']
     endereco_completo = item['endereco_completo']
-    soup = make_soup(endereco_completo)    
-    LIST_TAGS = ['title', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'p', 'ul', 'li', 'table']
-    tags = soup.find_all(LIST_TAGS)
+    
+    dict_response = get_request_html_status(endereco_completo)
 
-    # salva em arquivos
-    path_to_save = "/home/sirius/desafio_arquivos_teste/" + str(posicao) + ".txt"
-    with open(path_to_save, "w") as f:
-        for tag in tags:
-#            print(tag.get_text(separator=" "))
-            f.write(tag.get_text(separator=" "))
-            f.write('\n##########\n')
-#    print("\n\n\n PASSEI AQUI \n\n\n")
+    if (type(dict_response) != type(None)):
+        
+        html = dict_response['html']
+        soup = BeautifulSoup(html, 'html.parser')
+        
+        status_code = dict_response['status_code']
+            
+        item['conteudo_completo'] = get_text_from_soup(soup, LIST_TAGS)
+        item['status_code'] = status_code
