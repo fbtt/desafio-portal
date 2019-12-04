@@ -41,3 +41,79 @@ plt.xlabel('Domínio', fontsize=14)
 plt.xticks(rotation=60)
 plt.ylabel('Frequência', fontsize=14)
 plt.tight_layout()
+
+#%%
+'''
+Considerando os conteúdos completos das páginas, montar uma lista com os 100 termos (palavras chave)
+mais utilizados (ignorar palavras não relacionadas à telemedicina, como por exemplo: de, não, por, a, o, etc.);
+'''
+
+# imports
+import nltk
+from nltk.tokenize import word_tokenize # nltk.download('punkt')
+from nltk.tokenize import word_tokenize # nltk.download('punkt')
+
+# functions
+
+def clean_text(dirty_text: str):
+    """
+        write here
+    """
+
+    cleantext = (dirty_text
+                .lower()
+                .replace('\n', '')
+                .replace('\r', '')
+                .replace('\t', '')
+                .replace('|', '')
+                .replace('/', '')
+                .replace('?', '')
+                .replace('!', '')
+                .replace('(', '')
+                .replace(')', '')
+                .replace(',', '')
+                .replace('.', '')
+                .replace(':', '')
+                .replace(';', '')
+                )
+
+    return cleantext
+
+def remove_stopwords(list_of_tokens: list):
+    """
+        write here
+    """
+
+    clean_tokens = list_of_tokens[:]
+
+    for token in list_of_tokens:
+        if token in stopwords.words('portuguese'):
+            clean_tokens.remove(token)
+
+    return clean_tokens
+
+# join all text in the sites and put in the variable all_text
+all_text = [item['conteudo_completo'] for item in list_dict_responses]
+all_text = " ".join(all_text)
+len(all_text)
+
+# clean the text
+my_clean_text = clean_text(all_text)
+len(my_clean_text)
+
+# get the tokens of the cleaned text
+tokens = word_tokenize(my_clean_text, 'portuguese')
+len(tokens)
+
+# remove stopwords from the tokens
+tokens_without_sw = remove_stopwords(tokens)
+len(tokens_without_sw)
+
+# calculate the frequency of the tokens
+freq = nltk.FreqDist(tokens_without_sw)
+freq.plot(20, cumulative=False) # plot the frequency
+plt.tight_layout()
+
+# list with the 100 more common words
+list_more_common = list(freq.most_common())[:100]
+list_more_common = [item[0] for item in list_more_common]
