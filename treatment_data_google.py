@@ -31,6 +31,8 @@ df_value_counts = df['domains'].value_counts(ascending=False)
 
 df_most_frequent = df_value_counts.iloc[0:10]
 
+list_most_frequent = list(df_value_counts.index)
+
 # plotting the most frequent domains
 fig = plt.figure(figsize=[10, 5])
 df_most_frequent.plot.bar()
