@@ -11,6 +11,7 @@
 
 import pandas as pd
 from dateutil import parser
+import pickle
 import matplotlib.pyplot as plt
 import seaborn as sns
 sns.set_style("darkgrid")
@@ -19,6 +20,7 @@ sns.set_style("darkgrid")
 # paths
 
 folder_local = '/home/sirius/Documents/'
+path_load_data = folder_local + 'desafio-portal/data/list_twitter_dict_responses.data'
 folder_save_fig = folder_local + 'desafio-portal/results/'
 
 ###########
@@ -50,14 +52,20 @@ def barplot(series, figsize: list, title: str, xlabel: str, ylabel: str, rotatio
     return None
 
 ###########
+# load the data
+
+with open(path_load_data, 'rb') as filehandle:
+    list_twitter_dict_responses = pickle.load(filehandle)
+
+###########
 # build the dataframe
 
 columns = ['datetime', 'screen_name', 'statuses_count']
 df = pd.DataFrame(columns=columns)
 
-df['datetime'] = [item['datetime'] for item in list_dict_responses]
-df['screen_name'] = [item['user']['screen_name'] for item in list_dict_responses]
-df['statuses_count'] = [item['user']['statuses_count'] for item in list_dict_responses]
+df['datetime'] = [item['datetime'] for item in list_twitter_dict_responses]
+df['screen_name'] = [item['user']['screen_name'] for item in list_twitter_dict_responses]
+df['statuses_count'] = [item['user']['statuses_count'] for item in list_twitter_dict_responses]
 
 ###########
 # calculate the users that most posted
@@ -68,7 +76,6 @@ series_most_frequent = df_value_counts.iloc[0:50]
 list_user_more_posts = list(df_value_counts.index)
 
 # plot 'user' per 'number of posts'
-
 barplot(series=series_most_frequent,
         figsize=[10, 5],
         title="Usuários que mais twittaram",
@@ -83,13 +90,12 @@ plt.savefig(path_save_fig)
 
 ###########
 # calculate the number of tweets per day
-# ps: analysis may be wrong because the data are unbalanced.
+# ps: analysis may be wrong because the data are unbalanced
 
 series_day_of_week = df['datetime'].apply(lambda x: x[0:3])
 series_tweets_per_day = series_day_of_week.value_counts()
 
 # plot 'day of week' per 'number of tweets'
-
 barplot(series=series_tweets_per_day,
         figsize=[10, 5],
         title='Número de tweets por dia',
@@ -104,7 +110,7 @@ plt.savefig(path_save_fig)
 
 ###########
 # calculate number of tweets per hour
-# ps: analysis may be wrong because the data are unbalanced.
+# ps: analysis may be wrong because the data are unbalanced
 
 df['datetime'] = df['datetime'].apply(lambda x: parser.parse(x))
 
@@ -112,7 +118,6 @@ series_hours = df['datetime'].apply(lambda x: '{}'.format(x.hour))
 series_tweets_per_hour = series_hours.value_counts()
 
 # plot 'number of tweets' per 'hour'
-
 barplot(series=series_tweets_per_hour,
         figsize=[15, 10],
         title='Número de tweets por hora',
