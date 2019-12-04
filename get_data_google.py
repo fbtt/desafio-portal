@@ -6,16 +6,29 @@
 <ferbattisti.eng@gmail.com>
 """
 
-# libraries importing
-from googlesearch import search
+###########
+# imports
+
 import requests
+import pickle
+from googlesearch import search
 from bs4 import BeautifulSoup
 
+###########
+# paths
+
+folder_local = '/home/sirius/Documents/'
+path_save_data = folder_local + 'desafio-portal/data/list_google_dict_responses.data'
+
+###########
 # constants
+
 NUMBER_OF_LINKS = 100
 LIST_TAGS = ['title', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'p', 'ul', 'li', 'table']
 
+###########
 # functions
+
 def get_request_html_status(url: str):
     """ This funtion returns the html and the status_code of a requested url
     
@@ -57,13 +70,13 @@ def get_text_from_soup(soup: BeautifulSoup, list_tags: list):
 
     return conteudo_textual
 
-# list of dict to save the responses
-list_dict_responses = []
-
+###########
 # get the responses
+
+list_google_dict_responses = [] # list of dict to save the responses
 count = 1
 for endereco_completo in search(query="telemedicina", tld="co.in", num=10, start=0, stop=NUMBER_OF_LINKS, pause=2): 
-    list_dict_responses.append(
+    list_google_dict_responses.append(
             {'posicao': count,
              'status_code': None,
              'endereco_completo': endereco_completo,
@@ -71,8 +84,11 @@ for endereco_completo in search(query="telemedicina", tld="co.in", num=10, start
     )
     count = count + 1
 
-# armazenar conteudo completo e status_code nos elementos da lista list_dict_responses[]
-for item in list_dict_responses:
+###########
+# armazenar conteudo completo e status_code nos elementos da lista list_google_dict_responses[]
+
+cont = 0
+for item in list_google_dict_responses:
     endereco_completo = item['endereco_completo']
     
     dict_response = get_request_html_status(endereco_completo)
@@ -86,3 +102,11 @@ for item in list_dict_responses:
             
         item['conteudo_completo'] = get_text_from_soup(soup, LIST_TAGS)
         item['status_code'] = status_code
+        print(cont)
+        cont = cont + 1
+
+###########
+# save the data
+
+with open(path_save_data, 'wb') as filehandle:
+    pickle.dump(list_google_dict_responses, filehandle)
