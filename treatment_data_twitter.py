@@ -27,11 +27,28 @@ df_most_frequent = df_value_counts.iloc[0:50]
 
 list_user_more_posts = list(df_value_counts.index)
 
-# plot user x number of posts
+# plot 'user' per 'number of posts'
 fig = plt.figure(figsize=[10, 5])
 df_most_frequent.plot.bar()
 plt.title("Usuários que mais twittaram", fontsize=14)
 plt.xlabel('Usuário', fontsize=14)
 plt.xticks(rotation=90)
 plt.ylabel('Número de postagens', fontsize=14)
+plt.tight_layout()
+
+# insert column day_of_week in the df
+df['day_of_week'] = df['datetime'].apply(lambda x: x[0:3])
+
+# number of tweets for each day
+# obs: the first and the last days in this analysis may not represent the reality,
+# because the number of tweets in the database was set to a constant value. 
+tweets_per_day = df['day_of_week'].value_counts()
+
+# plot 'number of tweets' per 'day of the week'
+fig = plt.figure(figsize=[10, 5])
+tweets_per_day.plot.bar()
+plt.title('Número de tweets por dia', fontsize=14)
+plt.xlabel('Dia da semana', fontsize=14)
+plt.xticks(rotation=90)
+plt.ylabel('Número de tweets', fontsize=14)
 plt.tight_layout()
