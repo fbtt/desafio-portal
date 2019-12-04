@@ -16,6 +16,12 @@ import seaborn as sns
 sns.set_style("darkgrid")
 
 ###########
+# paths
+
+folder_local = '/home/sirius/Documents/'
+folder_save_fig = folder_local + 'desafio-portal/results/'
+
+###########
 # functions
 
 def barplot(series, figsize: list, title: str, xlabel: str, ylabel: str, rotation: int):
@@ -71,6 +77,10 @@ barplot(series=series_most_frequent,
         rotation=90
         )
 
+# save fig
+path_save_fig = folder_save_fig + 'usuarios_que_mais_twittaram.png'
+plt.savefig(path_save_fig)
+
 ###########
 # calculate the number of tweets per day
 # ps: analysis may be wrong because the data are unbalanced.
@@ -88,13 +98,17 @@ barplot(series=series_tweets_per_day,
         rotation=90
         )
 
+# save fig
+path_save_fig = folder_save_fig + 'numero_de_tweets_por_dia.png'
+plt.savefig(path_save_fig)
+
 ###########
 # calculate number of tweets per hour
 # ps: analysis may be wrong because the data are unbalanced.
 
 df['datetime'] = df['datetime'].apply(lambda x: parser.parse(x))
 
-series_hours = df['datetime'].apply(lambda x: '{}-{}'.format(x.day, x.hour))
+series_hours = df['datetime'].apply(lambda x: '{}'.format(x.hour))
 series_tweets_per_hour = series_hours.value_counts()
 
 # plot 'number of tweets' per 'hour'
@@ -106,3 +120,7 @@ barplot(series=series_tweets_per_hour,
         ylabel='Número de tweets',
         rotation=45
         )
+
+# save fig
+path_save_fig = folder_save_fig + 'numero_de_tweets_por_hora.png'
+plt.savefig(path_save_fig)
