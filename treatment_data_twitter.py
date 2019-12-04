@@ -36,19 +36,33 @@ plt.xticks(rotation=90)
 plt.ylabel('Número de postagens', fontsize=14)
 plt.tight_layout()
 
-# insert column day_of_week in the df
-df['day_of_week'] = df['datetime'].apply(lambda x: x[0:3])
-
 # number of tweets for each day
-# obs: the first and the last days in this analysis may not represent the reality,
-# because the number of tweets in the database was set to a constant value. 
-tweets_per_day = df['day_of_week'].value_counts()
+# ps: analysis may be wrong because the data are unbalanced.
+series_day_of_week = df['datetime'].apply(lambda x: x[0:3])
+series_tweets_per_day = series_day_of_week.value_counts()
 
 # plot 'number of tweets' per 'day of the week'
 fig = plt.figure(figsize=[10, 5])
-tweets_per_day.plot.bar()
+series_tweets_per_day.plot.bar()
 plt.title('Número de tweets por dia', fontsize=14)
 plt.xlabel('Dia da semana', fontsize=14)
 plt.xticks(rotation=90)
+plt.ylabel('Número de tweets', fontsize=14)
+plt.tight_layout()
+
+# number of tweets per hour
+# ps: analysis may be wrong because the data are unbalanced.
+
+df['datetime'] = df['datetime'].apply(lambda x: parser.parse(x))
+
+series_hours = df['datetime'].apply(lambda x: '{}-{}'.format(x.day, x.hour))
+series_tweets_per_hour = series_hours.value_counts()
+
+# plot 'number of tweets' per 'hour'
+fig = plt.figure(figsize=[15, 10])
+series_tweets_per_hour.plot.bar()
+plt.title('Número de tweets por hora', fontsize=14)
+plt.xlabel('dia-hora', fontsize=14)
+plt.xticks(rotation=45)
 plt.ylabel('Número de tweets', fontsize=14)
 plt.tight_layout()
