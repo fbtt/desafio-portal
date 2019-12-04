@@ -23,7 +23,7 @@ with open('/home/sirius/Documents/desafio-portal/twitter_credentials.json', 'r')
 
 try:
     tso = TwitterSearchOrder() # create a TwitterSearchOrder object
-    tso.set_keywords(['telemedicina']) # let's define all words we would like to have a look for
+    tso.set_keywords(['telemedicina']) # define all words we would like to have a look for
 
 #    tso.set_include_entities(False) # and don't give us all those entity information
 
@@ -38,8 +38,9 @@ try:
     list_dict_responses = [] # save the 
     for tweet in ts.search_tweets_iterable(tso):
         list_dict_responses.append(
-                {'user': tweet['user']['screen_name'],
-                 'date_hour': tweet['created_at'],
+#                {'user': tweet['user']['screen_name'],
+                {'user': tweet['user'],
+                 'datehour': tweet['created_at'],
                  'text': tweet['text']}
         )
 
@@ -47,5 +48,5 @@ try:
         if (len(list_dict_responses)==NUMBER_OF_TWEETS):
             break
 
-except TwitterSearchException as e: # take care of all those ugly errors if there are some
-    print(e)
+except TwitterSearchException as error: # take care of all those ugly errors if there are some
+    print('ERRO:', error)
