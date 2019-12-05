@@ -11,13 +11,14 @@ ferbattisti.eng@gmail.com
 from TwitterSearch import TwitterSearchOrder, TwitterSearch, TwitterSearchException
 import json
 import pickle
+import os
 
 ###########
 # paths
 
-folder_local = '/home/sirius/Documents/'
-path_credentials = folder_local + 'desafio-portal/twitter_credentials.json'
-path_save_data = folder_local + 'desafio-portal/data/list_twitter_dict_responses.data'
+folder_local = os.getcwd()
+path_credentials = folder_local + '/twitter_credentials.json'
+path_save_data = folder_local + '/data/list_twitter_dict_responses.data'
 
 ###########
 # number of tweets to get
@@ -29,7 +30,7 @@ NUMBER_OF_TWEETS = 1000
 
 with open(path_credentials, 'r') as json_file:
     data = json.load(json_file)
-    
+
     CONSUMER_KEY = data['CONSUMER_KEY']
     CONSUMER_SECRET = data['CONSUMER_SECRET']
     ACCESS_TOKEN = data['ACCESS_TOKEN']
@@ -37,7 +38,7 @@ with open(path_credentials, 'r') as json_file:
 
 ###########
 # get the tweets and put in the list list_twitter_dict_responses
-    
+
 try:
     tso = TwitterSearchOrder() # create a TwitterSearchOrder object
     tso.set_keywords(['telemedicina'])
@@ -50,7 +51,7 @@ try:
      )
 
     # insert the results in a list of dictionaries
-    
+
     list_twitter_dict_responses = [] 
     for tweet in ts.search_tweets_iterable(tso):
         list_twitter_dict_responses.append(
