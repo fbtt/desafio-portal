@@ -13,12 +13,13 @@ import requests
 import pickle
 from googlesearch import search
 from bs4 import BeautifulSoup
+import os
 
 ###########
 # paths
 
-folder_local = '/home/sirius/Documents/'
-path_save_data = folder_local + 'desafio-portal/data/list_google_dict_responses.data'
+folder_local = os.getcwd()
+path_save_data = folder_local + '/data/list_google_dict_responses.data'
 
 ###########
 # constants
@@ -87,7 +88,6 @@ for endereco_completo in search(query="telemedicina", tld="co.in", num=10, start
 ###########
 # armazenar conteudo completo e status_code nos elementos da lista list_google_dict_responses[]
 
-cont = 0
 for item in list_google_dict_responses:
     endereco_completo = item['endereco_completo']
     
@@ -102,8 +102,6 @@ for item in list_google_dict_responses:
             
         item['conteudo_completo'] = get_text_from_soup(soup, LIST_TAGS)
         item['status_code'] = status_code
-        print(cont)
-        cont = cont + 1
 
 ###########
 # save the data
