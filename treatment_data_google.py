@@ -17,13 +17,14 @@ sns.set_style("darkgrid")
 import nltk
 from nltk.tokenize import word_tokenize # nltk.download('punkt')
 from nltk.corpus import stopwords
+import os
 
 ###########
 # paths
 
-folder_local = '/home/sirius/Documents/'
-path_load_data = folder_local + 'desafio-portal/data/list_google_dict_responses.data'
-folder_save_fig = folder_local + 'desafio-portal/results/'
+folder_local = os.getcwd()
+path_load_data = folder_local + '/data/list_google_dict_responses.data'
+folder_save_fig = folder_local + '/results/'
 
 ###########
 # functions
