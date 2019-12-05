@@ -10,6 +10,7 @@
 # imports
 
 import pandas as pd
+import os
 from dateutil import parser
 import pickle
 import matplotlib.pyplot as plt
@@ -19,9 +20,9 @@ sns.set_style("darkgrid")
 ###########
 # paths
 
-folder_local = '/home/sirius/Documents/'
-path_load_data = folder_local + 'desafio-portal/data/list_twitter_dict_responses.data'
-folder_save_fig = folder_local + 'desafio-portal/results/'
+folder_local = os.getcwd()
+path_load_data = folder_local + '/data/list_twitter_dict_responses.data'
+folder_save_fig = folder_local + '/results/'
 
 ###########
 # functions
@@ -119,11 +120,11 @@ series_tweets_per_hour = series_hours.value_counts()
 
 # plot 'number of tweets' per 'hour'
 barplot(series=series_tweets_per_hour,
-        figsize=[15, 10],
+        figsize=[10, 5],
         title='Número de tweets por hora',
         xlabel='hora',
         ylabel='Número de tweets',
-        rotation=45
+        rotation=0
         )
 
 # save fig
